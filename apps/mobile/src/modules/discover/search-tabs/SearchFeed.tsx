@@ -40,12 +40,13 @@ export const SearchFeed = () => {
   const skeleton = useDataSkeleton(isLoading, data)
   if (skeleton) return skeleton
 
+  if (data === undefined) return null
+
   return (
     <BaseSearchPageFlatList
       refreshing={isLoading}
       onRefresh={refetch}
       keyExtractor={keyExtractor}
-      contentContainerClassName={"-mt-4"}
       renderScrollComponent={RenderScrollComponent}
       data={data?.data}
       renderItem={renderItem}
@@ -66,7 +67,7 @@ const SearchFeedItem: FC<ListRenderItemInfo<SearchResultItem>> = ({ item }) => {
   return (
     <Animated.View entering={FadeInUp}>
       <ItemPressable
-        className="py-6"
+        className="py-4"
         onPress={() => {
           if (item.feed?.id) {
             router.push(`/follow?id=${item.feed.id}`)

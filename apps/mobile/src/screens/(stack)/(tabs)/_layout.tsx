@@ -36,9 +36,11 @@ export default function TabLayout() {
 
   const [tabBarVisible, setTabBarVisible] = useState(true)
   useEffect(() => {
-    RNAnimated.spring(animatedTransformY, {
+    RNAnimated.timing(animatedTransformY, {
       toValue: tabBarVisible ? 1 : 0,
       useNativeDriver: true,
+      duration: 250,
+      easing: Easing.inOut(Easing.ease),
     }).start()
   }, [animatedTransformY, tabBarVisible])
 
@@ -80,7 +82,7 @@ export default function TabLayout() {
             }}
           >
             <Tabs.Screen
-              name="subscription"
+              name="index"
               options={{
                 title: "Subscriptions",
                 headerShown: false,

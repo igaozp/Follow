@@ -1,7 +1,7 @@
 import { env } from "@follow/shared/env"
 import type { authPlugins } from "@follow/shared/hono"
 import type { BetterAuthClientPlugin } from "better-auth/client"
-import { inferAdditionalFields } from "better-auth/client/plugins"
+import { inferAdditionalFields, twoFactorClient } from "better-auth/client/plugins"
 import { createAuthClient } from "better-auth/react"
 
 import { IN_ELECTRON, WEB_URL } from "./constants"
@@ -32,7 +32,7 @@ const serverPlugins = [
 
 const authClient = createAuthClient({
   baseURL: `${env.VITE_API_URL}/better-auth`,
-  plugins: serverPlugins,
+  plugins: [...serverPlugins, twoFactorClient()],
 })
 
 // @keep-sorted
@@ -51,11 +51,11 @@ export const {
   signIn,
   signOut,
   signUp,
+  twoFactor,
   unlinkAccount,
   updateUser,
 } = authClient
 
-export const LOGIN_CALLBACK_URL = `${WEB_URL}/login`
 export type LoginRuntime = "browser" | "app"
 export const loginHandler = async (
   provider: string,
@@ -79,7 +79,7 @@ export const loginHandler = async (
 
     signIn.social({
       provider: provider as "google" | "github" | "apple",
-      callbackURL: runtime === "app" ? LOGIN_CALLBACK_URL : undefined,
+      callbackURL: runtime === "app" ? `${WEB_URL}/login` : WEB_URL,
     })
   }
 }
